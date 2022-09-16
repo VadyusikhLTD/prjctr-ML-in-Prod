@@ -36,8 +36,7 @@ jobs:
         uses: docker/setup-buildx-action@v1
       -
         name: Run docker image
-        run |
-          docker run -it --rm --name test-first_docker first_docker:latest
+        run : docker run -it --rm --name test-first_docker first_docker:latest
       -
         name: Build and push
         uses: docker/build-push-action@v2
