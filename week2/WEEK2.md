@@ -1,11 +1,16 @@
 # How tabular data works on different file formats
 
+To reproduce results below run formats_time_test.py or ipynbs/pandas-format-benchmarking.ipynb.
+
+_Plot scales are logarithmic._
+
 ![image](D:\projects\prjctr-ML-in-Prod\week2\pandas-format-benchmarking\data\tabular_data_write_speed.png)
 
 ![image](D:\projects\prjctr-ML-in-Prod\week2\pandas-format-benchmarking\data\tabular_data_read_speed.png)
 
 ![image](D:\projects\prjctr-ML-in-Prod\week2\pandas-format-benchmarking\data\tabular_data_file_size.png)
 
+ 
 
 | write,ms/<br/>read,ms | CSV          | feather       | h5             |  
 |-----------------------|--------------|---------------|----------------|
@@ -22,3 +27,9 @@
 | 10 000    | 0.931   | 0.8     | 1.96   |   
 | 100 000   | 9       | 8.2     | 10.3   |   
 | 1 000 000 | 94      | 82      | 101    |   
+
+
+As we see not each type have different time for to read and write.
+Compare to **cvs** format **feather** are _x19_ faster to write and _x2_ to read.
+**h5** format are _x4_ faster to write and _x2_ to read. Using of appropriate 
+format could seriously improve speed and efficiency of a system.
