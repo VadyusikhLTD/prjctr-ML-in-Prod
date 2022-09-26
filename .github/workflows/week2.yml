@@ -18,8 +18,11 @@ jobs:
     - name: Try the cluster !
       run: minikube kubectl get pods
 
+    - name: Get help for minikube kubectl
+      run: minikube kubectl -- --help
+
     - name: Deploy minio to minikube
       run: |
-        kubectl create -f week2/minio/minio-standalone.yaml
-        kubectl wait --for=condition=complete --timeout=300s pod/minio-deployment
-        kubectl get pods
+        minikube kubectl create -f week2/minio/minio-standalone.yaml
+        minikube kubectl wait --for=condition=complete --timeout=300s pod/minio-deployment
+        minikube kubectl get pods
