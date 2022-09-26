@@ -21,5 +21,5 @@ jobs:
     - name: Deploy minio to minikube
       run: |
         kubectl create -f week2/minio/minio-standalone.yaml
-        kubectl wait --for=condition=complete --timeout=300s
+        kubectl wait --for=condition=ready --timeout=300s service/minio-api
         kubectl get pods
