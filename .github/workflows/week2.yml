@@ -23,3 +23,10 @@ jobs:
         kubectl create -f week2/minio/minio-standalone.yaml
         kubectl wait deployment -n default minio-deployment --for condition=Available=True --timeout=180s
         kubectl get pods
+        kubectl port-forward svc/minio-api 9000:9000
+
+    - name: Test MINIO CRUD
+      run : | 
+        cd week2/minio/
+        ls
+        pytest src/TestMinioCRUD.py

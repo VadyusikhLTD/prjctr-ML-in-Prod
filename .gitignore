@@ -1,3 +1,4 @@
 keys.txt
 **/.idea
 **/.ipynb_checkpoints
+**/.pytest_cache
