@@ -30,3 +30,15 @@ class ModelArguments:
         default=False,
         metadata={"help": "Will enable to load a pretrained model whose head dimensions are different."},
     )
+    conv1channels_num: int = field(
+        default=20,
+        # metadata={"help": "Will enable to load a pretrained model whose head dimensions are different."},
+    )
+    conv2channels_num: int = field(
+        default=20,
+        # metadata={"help": "Will enable to load a pretrained model whose head dimensions are different."},
+    )
+    final_activation: Optional[str] = field(
+        default=None,
+        # metadata={"help": "Will enable to load a pretrained model whose head dimensions are different."},
+    )

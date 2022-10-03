@@ -57,11 +57,11 @@ def main():
     logger.setLevel(log_level)
 
     # Log on each process the small summary:
-    logger.warning(
-        f"Process rank: {training_args.local_rank}, device: {training_args.device}, n_gpu: {training_args.n_gpu}"
-        + f"distributed training: {bool(training_args.local_rank != -1)}, 16-bits training: {training_args.fp16}"
-    )
-    logger.info(f"Training/evaluation parameters {training_args}")
+    #logger.warning(
+    #    f"Process rank: {training_args.local_rank}, device: {training_args.device}, n_gpu: {training_args.n_gpu}"
+    #    + f"distributed training: {bool(training_args.local_rank != -1)}, 16-bits training: {training_args.fp16}"
+    #)
+    #logger.info(f"Training/evaluation parameters {training_args}")
 
     # Set seed before initializing model.
     set_seed(training_args.seed)
@@ -81,7 +81,11 @@ def main():
     # INIT NETWORK
     model = None
     if model_args.model_name_or_path.lower() == 'SimpleCNN'.lower():
-        model = SimpleCNN().to(device)
+        model = SimpleCNN(
+            conv1channels_num=model_args.conv1channels_num,
+            conv2channels_num=model_args.conv2channels_num,
+            final_activation=model_args.final_activation
+        ).to(device)
     else:
         raise ValueError(f"Proper model not provided! Provided '{model_args.model_name_or_path}'")
 
@@ -93,7 +97,10 @@ def main():
                 "learning_rate": training_args.learning_rate,
                 "epochs": training_args.num_train_epochs,
                 "batch_size": training_args.train_batch_size,
-                "seed": training_args.seed
+                "seed": training_args.seed,
+                'conv1channels_num': model_args.conv1channels_num,
+                'conv2channels_num': model_args.conv2channels_num,
+                'final_activation': model_args.final_activation
             }
 
         # LOSS AND OPTIMIZER
@@ -107,7 +114,8 @@ def main():
             if epoch > 0:
                 checkpoint = {"state_dict": model.state_dict(), "optimizer": optimizer.state_dict()}
 
-            train_tqdm = tqdm(enumerate(train_loader), desc="Training batches", ascii=True, total=len(train_loader))
+            train_tqdm = tqdm(enumerate(train_loader), desc="Training batches", ascii=True, total=len(train_loader),
+                              leave=True, miniters=len(train_loader)//10)
             loss_vals = list()
             for step, (data, target) in train_tqdm:
                 data = data.to(device)
@@ -143,7 +151,7 @@ def main():
         test_acc = calc_accuracy(test_loader, model, device)
         logger.info(f"Test acc is {test_acc:.4f}")
         if USE_WANDB:
-            wandb.log({"test_accuracy": test_acc})
+            wandb.log({"val_acc": test_acc})
     # 
     #     # Loop to handle MNLI double evaluation (matched, mis-matched)
     #     tasks = [data_args.task_name]
