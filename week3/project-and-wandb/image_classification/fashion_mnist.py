@@ -2,8 +2,6 @@ import logging
 import os
 import sys
 
-import numpy as np
-
 from models import SimpleCNN, calc_accuracy
 
 import torch
@@ -137,54 +135,12 @@ def main():
             if USE_WANDB:
                 wandb.log({"train_accuracy": train_acc, 'epoch': epoch})
 
-
     if training_args.do_eval:
         logger.info("*** Evaluate ***")
         test_acc = calc_accuracy(test_loader, model, device)
         logger.info(f"Test acc is {test_acc:.4f}")
         if USE_WANDB:
             wandb.log({"test_accuracy": test_acc})
-    # 
-    #     # Loop to handle MNLI double evaluation (matched, mis-matched)
-    #     tasks = [data_args.task_name]
-    #     eval_datasets = [eval_dataset]
-    #     if data_args.task_name == "mnli":
-    #         tasks.append("mnli-mm")
-    #         valid_mm_dataset = raw_datasets["validation_mismatched"]
-    #         if data_args.max_eval_samples is not None:
-    #             max_eval_samples = min(len(valid_mm_dataset), data_args.max_eval_samples)
-    #             valid_mm_dataset = valid_mm_dataset.select(range(max_eval_samples))
-    #         eval_datasets.append(valid_mm_dataset)
-    #         combined = {}
-    # 
-    #     for eval_dataset, task in zip(eval_datasets, tasks):
-    #         metrics = trainer.evaluate(eval_dataset=eval_dataset)
-    # 
-    #         max_eval_samples = (
-    #             data_args.max_eval_samples if data_args.max_eval_samples is not None else len(eval_dataset)
-    #         )
-    #         metrics["eval_samples"] = min(max_eval_samples, len(eval_dataset))
-    # 
-    #         if task == "mnli-mm":
-    #             metrics = {k + "_mm": v for k, v in metrics.items()}
-    #         if task is not None and "mnli" in task:
-    #             combined.update(metrics)
-    # 
-    #         trainer.log_metrics("eval", metrics)
-    #         trainer.save_metrics("eval", combined if task is not None and "mnli" in task else metrics)
-
-
-    # kwargs = {"finetuned_from": model_args.model_name_or_path, "tasks": "image-classification"}
-    # if data_args.task_name is not None:
-    #     kwargs["language"] = "en"
-    #     kwargs["dataset_tags"] = "glue"
-    #     kwargs["dataset_args"] = data_args.task_name
-    #     kwargs["dataset"] = f"GLUE {data_args.task_name.upper()}"
-    #
-    # if training_args.push_to_hub:
-    #     trainer.push_to_hub(**kwargs)
-    # else:
-    #     trainer.create_model_card(**kwargs)
 
 
 if __name__ == "__main__":
