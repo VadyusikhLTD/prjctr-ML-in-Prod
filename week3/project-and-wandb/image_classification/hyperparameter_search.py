@@ -3,12 +3,12 @@ import os
 
 
 sweep_configuration = {
-    'method': 'random',
+    'method': 'bayes',
     'name': 'sweep',
     'metric': {'goal': 'maximize', 'name': 'val_acc'},
     'parameters':
     {
-        'batch_size': {'values': [8, 128]},
+        'batch_size': {'values': [8, 64]},
         'conv1channels_num': {'values': [20, 40, 70]},
         'conv2channels_num': {'values': [10, 30, 50]},
         'final_activation': {'values': [None, 'softmax', 'relu']}
@@ -40,4 +40,4 @@ if __name__ == "__main__":
     sweep_id = wandb.sweep(sweep=sweep_configuration, project="prjctr-ML-in-Prod", entity="vadyusikh")
 
     # 🐝 Step 4: Call to `wandb.agent` to start a sweep
-    wandb.agent(sweep_id, function=train_func, count=10)
+    wandb.agent(sweep_id, function=train_func, count=8)

@@ -182,7 +182,7 @@ def main():
     #         trainer.save_metrics("eval", combined if task is not None and "mnli" in task else metrics)
 
 
-    # kwargs = {"finetuned_from": model_args.model_name_or_path, "tasks": "image-classification"}
+    # kwargs = {"finetuned_from": model_args.model_name_or_path, "tasks": "image_classification"}
     # if data_args.task_name is not None:
     #     kwargs["language"] = "en"
     #     kwargs["dataset_tags"] = "glue"
