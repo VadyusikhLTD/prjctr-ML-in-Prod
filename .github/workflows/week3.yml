@@ -15,7 +15,7 @@ on:
 
 env:
   DOCKER_IMAGE_NAME: ml_in_prod
-  DOCKER_IMAGE_VERSION : ${{ github.head_ref }}
+  DOCKER_IMAGE_VERSION : ${{ github.ref_name }}
   DOCKER_IMAGE_FULL_NAME : ml_in_prod:${{ github.head_ref }}
   DOCKER_IMAGE_HUB_PATH : ${{ secrets.DOCKER_HUB_USERNAME }}/ml_in_prod:${{ github.head_ref }}
 
@@ -34,7 +34,7 @@ jobs:
       -
         name: Branch name
         run: |
-          echo ${{ github.head_ref }}
+          echo ${{ github.ref_name }}
           echo ${{ github.ref }}
       -
         name: Login to Docker Hub
@@ -42,51 +42,51 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-      -
-        name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-      -
-        name: Build docker
-        uses: docker/build-push-action@v2
-        with:
-          context: week3/image_classification
-          file: week3/image_classification/Dockerfile
-          push: false
-          tags: ${{ secrets.DOCKER_IMAGE_HUB_PATH }}
-          cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:buildcache,mode=max
-      -
-        name: Build new
-        run: |
-          cd week3/image_classification
-          make build
-      -
-        name: Test code
-        if: github.ref == 'refs/heads/week3-part2-test-code'
-        run: |
-          docker run --network=host ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_code
-      -
-        name: Test data
-        if: github.ref == 'refs/heads/week3-part2-test-data'
-        run: |
-          docker run --network=host ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_data
-      -
-        name: Test model
-        if: github.ref == 'refs/heads/week3-part2-test-model'
-        run: |
-          docker run --network=host ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_model
-      -
-        name: Test all
-        if: github.ref == 'refs/heads/week3'
-        run: |
-          docker run --network=host ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_all
-      -
-       name: Build and push
-       uses: docker/build-push-action@v2
-       with:
-          context: week3/image_classification
-          file: week3/image_classification/Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_VERSION }}
-          cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:buildcache,mode=max
+#      -
+#        name: Set up Docker Buildx
+#        uses: docker/setup-buildx-action@v1
+#      -
+#        name: Build docker
+#        uses: docker/build-push-action@v2
+#        with:
+#          context: week3/image_classification
+#          file: week3/image_classification/Dockerfile
+#          push: false
+#          tags: ${{ secrets.DOCKER_IMAGE_HUB_PATH }}
+#          cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:buildcache
+#          cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:buildcache,mode=max
+#      -
+#        name: Build new
+#        run: |
+#          cd week3/image_classification
+#          make build
+#      -
+#        name: Test code
+#        if: github.ref == 'refs/heads/week3-part2-test-code'
+#        run: |
+#          docker run --network=host ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_code
+#      -
+#        name: Test data
+#        if: github.ref == 'refs/heads/week3-part2-test-data'
+#        run: |
+#          docker run --network=host ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_data
+#      -
+#        name: Test model
+#        if: github.ref == 'refs/heads/week3-part2-test-model'
+#        run: |
+#          docker run --network=host ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_model
+#      -
+#        name: Test all
+#        if: github.ref == 'refs/heads/week3'
+#        run: |
+#          docker run --network=host ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_all
+#      -
+#       name: Build and push
+#       uses: docker/build-push-action@v2
+#       with:
+#          context: week3/image_classification
+#          file: week3/image_classification/Dockerfile
+#          push: true
+#          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_VERSION }}
+#          cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:buildcache
+#          cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:buildcache,mode=max
