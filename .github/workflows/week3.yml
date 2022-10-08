@@ -57,6 +57,10 @@ jobs:
           ls
           make build
       -
+        name: Branch name
+        run: |
+          echo ${{ github.ref }}
+      -
         name: Test code
         run: |
           docker run --network=host ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_code
@@ -64,14 +68,14 @@ jobs:
         name: Test data
         run: |
           docker run --network=host ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_data
-      -
-        name: Test model
-        run: |
-          docker run --network=host ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_model
-      -
-        name: Test all
-        run: |
-          docker run --network=host ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_all
+#      -
+#        name: Test model
+#        run: |
+#          docker run --network=host ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_model
+#      -
+#        name: Test all
+#        run: |
+#          docker run --network=host ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_all
       -
         name: Build and push
         uses: docker/build-push-action@v2
