@@ -51,12 +51,9 @@ jobs:
           cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:buildcache
           cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:buildcache,mode=max
       -
-        name: Go to makefile
-        run: |
-          cd week3/image_classification
-      -
         name: Build new
         run: |
+          cd week3/image_classification
           ls
           make build
       -
