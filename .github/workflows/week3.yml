@@ -34,7 +34,11 @@ jobs:
       -
         name: Branch name
         run: |
-          echo ${{ github.ref_name }}
+          echo ref_name='${{ github.ref_name }}'
+          echo ref_type='${{ github.ref_type }}'
+          echo ref=${{ github.ref }}
+          echo base_ref=${{ github.base_ref }}
+          echo head_ref=${{ github.head_ref }}
       -
         name: Login to Docker Hub
         uses: docker/login-action@v1
@@ -64,22 +68,22 @@ jobs:
           make build
       -
         name: Test code
-        if: github.ref_name == 'week3-part2-test-code'
+        if: github.ref_name == 'week3-part2-test-code' || github.head_ref == 'week3-part2-test-code'
         run: |
           docker run --network=host ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_code
       -
         name: Test data
-        if: github.ref_name == 'week3-part2-test-data'
+        if: github.ref_name == 'week3-part2-test-data' || github.head_ref == 'week3-part2-test-data'
         run: |
           docker run --network=host ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_data
       -
         name: Test model
-        if: github.ref_name == 'week3-part2-test-model'
+        if: github.ref_name == 'week3-part2-test-model' || github.head_ref == 'week3-part2-test-model'
         run: |
           docker run --network=host ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_model
       -
         name: Test all
-        if: github.ref_name == 'week3'
+        if: github.ref_name == 'week3'  || github.head_ref == 'week3'
         run: |
           docker run --network=host ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_all
       -
