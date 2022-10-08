@@ -62,27 +62,31 @@ jobs:
           echo ${{ github.ref }}
       -
         name: Test code
+        if: github.ref == 'refs/heads/develop'
         run: |
           docker run --network=host ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_code
       -
         name: Test data
+        if: github.ref == 'refs/heads/develop'
         run: |
           docker run --network=host ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_data
-#      -
-#        name: Test model
-#        run: |
-#          docker run --network=host ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_model
-#      -
-#        name: Test all
-#        run: |
-#          docker run --network=host ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_all
       -
-        name: Build and push
-        uses: docker/build-push-action@v2
-        with:
+        name: Test model
+        if: github.ref == 'refs/heads/develop'
+        run: |
+          docker run --network=host ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_model
+      -
+        name: Test all
+        if: github.ref == 'refs/heads/develop'
+        run: |
+          docker run --network=host ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_all
+      -
+       name: Build and push
+       uses: docker/build-push-action@v2
+       with:
           context: week3/image_classification
           file: week3/image_classification/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_IMAGE_HUB_PATH }}
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_VERSION }}
           cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:buildcache
           cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:buildcache,mode=max
