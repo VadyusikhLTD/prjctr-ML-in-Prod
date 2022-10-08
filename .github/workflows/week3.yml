@@ -15,9 +15,9 @@ on:
 
 env:
   DOCKER_IMAGE_NAME: ml_in_prod
-  DOCKER_IMAGE_VERSION : ${{ github.ref_name }}
-  DOCKER_IMAGE_FULL_NAME : ml_in_prod:${{ github.ref_name }}
-  DOCKER_IMAGE_HUB_PATH : ${{ secrets.DOCKER_HUB_USERNAME }}/ml_in_prod:${{ github.ref_name }}
+  DOCKER_IMAGE_VERSION : week3-latest
+  DOCKER_IMAGE_FULL_NAME : ml_in_prod:week3-latest
+  DOCKER_IMAGE_HUB_PATH : ${{ secrets.DOCKER_HUB_USERNAME }}/ml_in_prod:week3-latest
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
