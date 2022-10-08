@@ -59,19 +59,19 @@ jobs:
       -
         name: Test code
         run: |
-          docker run ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_code
+          docker run --network=host ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_code
       -
         name: Test data
         run: |
-          docker run ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_data
+          docker run --network=host ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_data
       -
         name: Test model
         run: |
-          docker run ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_model
+          docker run --network=host ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_model
       -
         name: Test all
         run: |
-          docker run ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_all
+          docker run --network=host ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_all
       -
         name: Build and push
         uses: docker/build-push-action@v2
