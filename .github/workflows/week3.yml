@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: week3-CI
 
 # Controls when the workflow will run
 on:
@@ -16,7 +16,11 @@ on:
 env:
   DOCKER_IMAGE_NAME: ml_in_prod
   DOCKER_IMAGE_VERSION : week3_latest
+
+env:
   DOCKER_IMAGE_FULL_NAME : ${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_VERSION }}
+
+env:
   DOCKER_IMAGE_HUB_PATH : ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_IMAGE_FULL_NAME }}
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
