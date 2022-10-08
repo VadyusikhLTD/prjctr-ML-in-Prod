@@ -16,7 +16,7 @@ on:
 env:
   DOCKER_IMAGE_NAME: ml_in_prod
   DOCKER_IMAGE_VERSION : ${GITHUB_REF##*/}
-  DOCKER_IMAGE_FULL_NAME : ml_in_prod:${GITHUB_REF##*/}
+  DOCKER_IMAGE_FULL_NAME : ml_in_prod:${{GITHUB_REF##*/}}
   DOCKER_IMAGE_HUB_PATH : ${{ secrets.DOCKER_HUB_USERNAME }}/ml_in_prod:${GITHUB_REF##*/}
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -31,6 +31,11 @@ jobs:
       -
         name: Checkout
         uses: actions/checkout@v2
+      -
+        name: Branch name
+        run: |
+          echo ${{GITHUB_REF##*/}}
+          echo ${{ github.ref }}
       -
         name: Login to Docker Hub
         uses: docker/login-action@v1
@@ -55,11 +60,6 @@ jobs:
         run: |
           cd week3/image_classification
           make build
-      -
-        name: Branch name
-        run: |
-          echo ${GITHUB_REF##*/}
-          echo ${{ github.ref }}
       -
         name: Test code
         if: github.ref == 'refs/heads/week3-part2-test-code'
