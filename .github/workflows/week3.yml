@@ -51,9 +51,6 @@ jobs:
           cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:buildcache
           cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:buildcache,mode=max
       -
-        name: Pull docker
-        run: docker pull ${{ secrets.DOCKER_IMAGE_HUB_PATH }}
-      -
         name: Go to makefile
         run: |
           cd week3/image_classification
