@@ -9,7 +9,8 @@ from models import SimpleCNN, calc_accuracy
 from fashion_mnist import train_loop
 from utils.DataTrainingArguments import DataTrainingArguments
 from utils.ModelArguments import ModelArguments
-from transformers import TrainingArguments
+from transformers import TrainingArguments, set_seed
+
 
 import pytest
 
@@ -76,7 +77,6 @@ def train_data_loader() -> DataLoader:
 def val_data_loader() -> DataLoader:
     val_dataset = datasets.FashionMNIST(root="../dataset", train=False, transform=transforms.ToTensor(), download=True)
     return DataLoader(dataset=val_dataset, batch_size=64, shuffle=True)
-
 
 
 def test_simple_predict(model, simple_data):
