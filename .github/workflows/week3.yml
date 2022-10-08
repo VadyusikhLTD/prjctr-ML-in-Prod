@@ -62,22 +62,22 @@ jobs:
           echo ${{ github.ref }}
       -
         name: Test code
-        if: github.ref == 'refs/heads/develop'
+        if: github.ref == 'refs/heads/week3-part2-test-code'
         run: |
           docker run --network=host ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_code
       -
         name: Test data
-        if: github.ref == 'refs/heads/develop'
+        if: github.ref == 'refs/heads/week3-part2-test-data'
         run: |
           docker run --network=host ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_data
       -
         name: Test model
-        if: github.ref == 'refs/heads/develop'
+        if: github.ref == 'refs/heads/week3-part2-test-model'
         run: |
           docker run --network=host ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_model
       -
         name: Test all
-        if: github.ref == 'refs/heads/develop'
+        if: github.ref == 'refs/heads/week3'
         run: |
           docker run --network=host ${{ env.DOCKER_IMAGE_FULL_NAME }} make test_all
       -
