@@ -99,9 +99,7 @@ def train(model_args, data_args, training_args):
                 'final_activation': model_args.final_activation
             }
 
-        train_loop(
-        , model, training_args, device, data_args.is_use_wandb)
-
+        train_loop(train_dataloader, model, training_args, device, data_args.is_use_wandb)
 
     if training_args.do_eval:
         logger.info("*** Evaluate ***")
