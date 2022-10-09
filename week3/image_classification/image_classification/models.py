@@ -90,9 +90,9 @@ def calc_accuracy(test_data, model_, device):
             _, pred_ = pred_.max(1)
             num_correct += (pred_ == y).sum()
             num_samples += pred_.size(0)
-            
-        data_tqdm.set_postfix_str(f"Accuracy is {num_correct/num_samples:.4f}")
 
+        data_tqdm.set_postfix_str(f"Accuracy is {num_correct/num_samples:.4f}")
+        
     model_.train()
     return num_correct/num_samples
 
