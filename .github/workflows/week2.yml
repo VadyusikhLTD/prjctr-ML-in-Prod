@@ -3,7 +3,6 @@ name: week-2-ci
 on:
   push:
     branches:
-      - 'main'
       - 'week2-minio'
 
 jobs:

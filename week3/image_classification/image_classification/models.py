@@ -47,7 +47,6 @@ class SimpleCNN(nn.Module):
         self.conv2 = nn.Conv2d(in_channels=conv1channels_num, out_channels=conv2channels_num, kernel_size=3, padding=1)
         self.fc = nn.Linear(conv2channels_num * 7 * 7, class_num)
 
-
     def forward(self, x):
         if self.use_bn_for_input:
             x = self.bn_input(x)
@@ -66,6 +65,14 @@ class SimpleCNN(nn.Module):
 
         x = x.reshape(x.shape[0], -1)
         x = self.fc(x)
+        return self.final_activation(x)
+
+
+class IdentityModel(nn.Module):
+    def __init__(self):
+        super(IdentityModel, self).__init__()
+
+    def forward(self, x):
         return x
 
 
@@ -83,6 +90,8 @@ def calc_accuracy(test_data, model_, device):
             _, pred_ = pred_.max(1)
             num_correct += (pred_ == y).sum()
             num_samples += pred_.size(0)
+
+        data_tqdm.set_postfix_str(f"Accuracy is {num_correct/num_samples:.4f}")
 
     model_.train()
     return num_correct/num_samples
