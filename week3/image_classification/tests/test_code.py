@@ -13,7 +13,7 @@ def my_identity_model() -> IdentityModel:
 
 @pytest.fixture
 def my_test_data():
-    train = data_utils.TensorDataset(torch.tensor([[.1, 0.9], [-0.5, 22], [0, 1]]), torch.tensor([1, 1, 0]) )
+    train = data_utils.TensorDataset(torch.tensor([[.1, 0.9], [-0.5, 22], [0, 1]]), torch.tensor([1, 1, 0]))
     train_loader = data_utils.DataLoader(train, batch_size=50, shuffle=True)
     return train_loader
 

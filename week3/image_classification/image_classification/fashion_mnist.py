@@ -2,8 +2,6 @@ import logging
 import os
 import sys
 
-import numpy as np
-
 from models import SimpleCNN, calc_accuracy
 
 import torch
@@ -24,11 +22,7 @@ from tqdm import tqdm
 from utils.DataTrainingArguments import DataTrainingArguments
 from utils.ModelArguments import ModelArguments
 
-USE_WANDB = True
-
-if USE_WANDB:
-    import wandb
-    wandb.init(project="prjctr-ML-in-Prod", entity="vadyusikh")
+import wandb
 
 logger = logging.getLogger(__name__)
 
@@ -56,13 +50,15 @@ def main():
     log_level = training_args.get_process_log_level()
     logger.setLevel(log_level)
 
-    # Log on each process the small summary:
-    #logger.warning(
-    #    f"Process rank: {training_args.local_rank}, device: {training_args.device}, n_gpu: {training_args.n_gpu}"
-    #    + f"distributed training: {bool(training_args.local_rank != -1)}, 16-bits training: {training_args.fp16}"
-    #)
-    #logger.info(f"Training/evaluation parameters {training_args}")
+    data_args.is_use_wandb = True
 
+    if data_args.is_use_wandb:
+        wandb.init(project="prjctr-ML-in-Prod", entity="vadyusikh")
+
+    train(model_args, data_args, training_args)
+
+
+def train(model_args, data_args, training_args):
     # Set seed before initializing model.
     set_seed(training_args.seed)
 
@@ -71,7 +67,7 @@ def main():
     if data_args.dataset_name == 'fashion_mnist':
         # LOAD DATA
         train_dataset = datasets.FashionMNIST(root="dataset/", train=True, transform=transforms.ToTensor(), download=True)
-        train_loader = DataLoader(dataset=train_dataset, batch_size=training_args.train_batch_size, shuffle=True)
+        train_dataloader = DataLoader(dataset=train_dataset, batch_size=training_args.train_batch_size, shuffle=True)
 
         test_dataset = datasets.FashionMNIST(root="dataset/", train=False, transform=transforms.ToTensor(), download=True)
         test_loader = DataLoader(dataset=test_dataset, batch_size=training_args.train_batch_size, shuffle=True)
@@ -92,7 +88,7 @@ def main():
     if training_args.do_train:
         logger.info("*** Training ***")
 
-        if USE_WANDB:
+        if data_args.is_use_wandb:
             wandb.config = {
                 "learning_rate": training_args.learning_rate,
                 "epochs": training_args.num_train_epochs,
@@ -103,96 +99,65 @@ def main():
                 'final_activation': model_args.final_activation
             }
 
-        # LOSS AND OPTIMIZER
-        loss_fn = nn.CrossEntropyLoss()
-        optimizer = optim.Adam(model.parameters(), lr=training_args.learning_rate)
-
-        # TRAIN
-        update_rate = len(train_loader)//20
-        epoch_tqdm = tqdm(range(int(training_args.num_train_epochs)), desc="Epochs", ascii=True)
-        for epoch in epoch_tqdm:
-            if epoch > 0:
-                checkpoint = {"state_dict": model.state_dict(), "optimizer": optimizer.state_dict()}
-
-            train_tqdm = tqdm(enumerate(train_loader), desc="Training batches", ascii=True, total=len(train_loader),
-                              leave=True, miniters=len(train_loader)//10)
-            loss_vals = list()
-            for step, (data, target) in train_tqdm:
-                data = data.to(device)
-                target = target.to(device)
-
-                #forward
-                pred = model(data)
-                loss = loss_fn(pred, target)
-
-                #backward
-                optimizer.zero_grad()
-                loss.backward()
-
-                #optimizer step
-                optimizer.step()
-
-                if step % update_rate == 0 and step > 0:
-                    mean_loss = torch.tensor(loss_vals).mean()
-                    train_tqdm.set_postfix_str(f"Train mean loss is {mean_loss:.4f} (step no. {step})")
-                    if USE_WANDB:
-                        wandb.log({"train_loss": mean_loss}, step=step + epoch*len(train_loader))
-                else:
-                    loss_vals += [loss.item()]
-
-            train_acc = calc_accuracy(train_loader, model, device)
-            epoch_tqdm.set_postfix_str(f"Train acc is {train_acc:.4f}")
-            if USE_WANDB:
-                wandb.log({"train_accuracy": train_acc, 'epoch': epoch})
+        train_loop(
+        , model, training_args, device, data_args.is_use_wandb)
 
 
     if training_args.do_eval:
         logger.info("*** Evaluate ***")
         test_acc = calc_accuracy(test_loader, model, device)
         logger.info(f"Test acc is {test_acc:.4f}")
-        if USE_WANDB:
+        if data_args.is_use_wandb:
             wandb.log({"val_acc": test_acc})
-    # 
-    #     # Loop to handle MNLI double evaluation (matched, mis-matched)
-    #     tasks = [data_args.task_name]
-    #     eval_datasets = [eval_dataset]
-    #     if data_args.task_name == "mnli":
-    #         tasks.append("mnli-mm")
-    #         valid_mm_dataset = raw_datasets["validation_mismatched"]
-    #         if data_args.max_eval_samples is not None:
-    #             max_eval_samples = min(len(valid_mm_dataset), data_args.max_eval_samples)
-    #             valid_mm_dataset = valid_mm_dataset.select(range(max_eval_samples))
-    #         eval_datasets.append(valid_mm_dataset)
-    #         combined = {}
-    # 
-    #     for eval_dataset, task in zip(eval_datasets, tasks):
-    #         metrics = trainer.evaluate(eval_dataset=eval_dataset)
-    # 
-    #         max_eval_samples = (
-    #             data_args.max_eval_samples if data_args.max_eval_samples is not None else len(eval_dataset)
-    #         )
-    #         metrics["eval_samples"] = min(max_eval_samples, len(eval_dataset))
-    # 
-    #         if task == "mnli-mm":
-    #             metrics = {k + "_mm": v for k, v in metrics.items()}
-    #         if task is not None and "mnli" in task:
-    #             combined.update(metrics)
-    # 
-    #         trainer.log_metrics("eval", metrics)
-    #         trainer.save_metrics("eval", combined if task is not None and "mnli" in task else metrics)
 
 
-    # kwargs = {"finetuned_from": model_args.model_name_or_path, "tasks": "image_classification"}
-    # if data_args.task_name is not None:
-    #     kwargs["language"] = "en"
-    #     kwargs["dataset_tags"] = "glue"
-    #     kwargs["dataset_args"] = data_args.task_name
-    #     kwargs["dataset"] = f"GLUE {data_args.task_name.upper()}"
-    #
-    # if training_args.push_to_hub:
-    #     trainer.push_to_hub(**kwargs)
-    # else:
-    #     trainer.create_model_card(**kwargs)
+def train_loop(train_dataloader, model, training_args, device, is_use_wandb, optimizer=None, loss_fn=None):
+    # LOSS AND OPTIMIZER
+    if loss_fn is None:
+        loss_fn = nn.CrossEntropyLoss()
+    if optimizer is None:
+        optimizer = optim.Adam(model.parameters(), lr=training_args.learning_rate)
+
+    # TRAIN
+    update_rate = max(1, len(train_dataloader)//20)
+    epoch_tqdm = tqdm(range(int(training_args.num_train_epochs)), desc="Epochs", ascii=True)
+    for epoch in epoch_tqdm:
+        if epoch > 0:
+            checkpoint = {"state_dict": model.state_dict(), "optimizer": optimizer.state_dict()}
+
+        train_tqdm = tqdm(enumerate(train_dataloader), desc="Training batches", ascii=True, total=len(train_dataloader),
+                                  leave=True, miniters=len(train_dataloader)//10)
+        loss_vals = list()
+        for step, (data, target) in train_tqdm:
+            data = data.to(device)
+            target = target.to(device)
+
+            #forward
+            pred = model(data)
+            loss = loss_fn(pred, target)
+
+            #backward
+            optimizer.zero_grad()
+            loss.backward()
+
+            #optimizer step
+            optimizer.step()
+
+            loss_vals += [loss.item()]
+            if step % update_rate == 0:
+                mean_loss = torch.tensor(loss_vals).mean()
+                loss_vals.clear()
+                train_tqdm.set_postfix_str(f"Train mean loss is {mean_loss:.4f} (step no. {step})")
+                if is_use_wandb:
+                    wandb.log({"train_loss": mean_loss}, step=step + epoch*len(train_dataloader))
+
+
+        train_acc = calc_accuracy(train_dataloader, model, device)
+        epoch_tqdm.set_postfix_str(f"Train acc is {train_acc:.4f}")
+        if is_use_wandb:
+            wandb.log({"train_accuracy": train_acc, 'epoch': epoch})
+
+    return loss.item()
 
 
 if __name__ == "__main__":
