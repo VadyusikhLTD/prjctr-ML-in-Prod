@@ -1,5 +1,4 @@
 keys.txt
 **/.idea
 **/.ipynb_checkpoints
-week3/image_classification/.pytest_cache
-week3_venv
+**/.pytest_cache

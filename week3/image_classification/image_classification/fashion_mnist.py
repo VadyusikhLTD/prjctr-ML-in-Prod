@@ -24,7 +24,6 @@ from utils.ModelArguments import ModelArguments
 
 import wandb
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -50,6 +49,7 @@ def main():
 
     log_level = training_args.get_process_log_level()
     logger.setLevel(log_level)
+
     data_args.is_use_wandb = True
 
     if data_args.is_use_wandb:
@@ -99,7 +99,9 @@ def train(model_args, data_args, training_args):
                 'final_activation': model_args.final_activation
             }
 
-        train_loop(train_dataloader, model, training_args, device, data_args.is_use_wandb)
+        train_loop(
+        , model, training_args, device, data_args.is_use_wandb)
+
 
     if training_args.do_eval:
         logger.info("*** Evaluate ***")
