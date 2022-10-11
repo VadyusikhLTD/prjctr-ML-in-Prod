@@ -37,7 +37,7 @@ class SimpleCNN(nn.Module):
             self.final_activation = nn.Softmax()
         elif final_activation == 'relu':
             self.final_activation = nn.ReLU()
-        elif final_activation is None:
+        elif (final_activation is None) or (final_activation == 'None'):
             self.final_activation = nn.Identity()
         else:
             raise ValueError(f"Wrong final_activation - '{final_activation}'.")
@@ -66,6 +66,14 @@ class SimpleCNN(nn.Module):
 
         x = x.reshape(x.shape[0], -1)
         x = self.fc(x)
+        return self.final_activation(x)
+
+
+class IdentityModel(nn.Module):
+    def __init__(self):
+        super(IdentityModel, self).__init__()
+
+    def forward(self, x):
         return x
 
 
@@ -74,7 +82,7 @@ def calc_accuracy(test_data, model_, device):
     model_.eval()
 
     with torch.no_grad():
-        data_tqdm = tqdm(test_data, desc="Accuracy calculation", ascii=True)
+        data_tqdm = tqdm(test_data, desc="Accuracy calculation", ascii=True, miniters=len(test_data)//5)
         for x, y in data_tqdm:
             x = x.to(device)
             y = y.to(device)
@@ -83,6 +91,8 @@ def calc_accuracy(test_data, model_, device):
             _, pred_ = pred_.max(1)
             num_correct += (pred_ == y).sum()
             num_samples += pred_.size(0)
+
+        data_tqdm.set_postfix_str(f"Accuracy is {num_correct/num_samples:.4f}")
 
     model_.train()
     return num_correct/num_samples

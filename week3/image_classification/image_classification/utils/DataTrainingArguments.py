@@ -11,6 +11,9 @@ class DataTrainingArguments:
     into argparse arguments to be able to specify them on
     the command line.
     """
+    is_use_wandb: Optional[bool] = field(
+        default=False, metadata={"help": "Define would we use WANDB lib to log our model."}
+    )
     dataset_name: Optional[str] = field(
         default=None, metadata={"help": "The name of the dataset to use (via the datasets library)."}
     )
