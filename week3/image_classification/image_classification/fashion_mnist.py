@@ -49,7 +49,6 @@ def main():
 
     log_level = training_args.get_process_log_level()
     logger.setLevel(log_level)
-
     data_args.is_use_wandb = True
 
     if data_args.is_use_wandb:
@@ -100,7 +99,6 @@ def train(model_args, data_args, training_args):
             }
 
         train_loop(train_dataloader, model, training_args, device, is_use_wandb=data_args.is_use_wandb)
-
     if training_args.do_eval:
         logger.info("*** Evaluate ***")
         test_acc = calc_accuracy(test_loader, model, device)

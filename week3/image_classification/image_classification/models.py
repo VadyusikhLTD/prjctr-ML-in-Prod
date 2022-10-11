@@ -47,6 +47,7 @@ class SimpleCNN(nn.Module):
         self.conv2 = nn.Conv2d(in_channels=conv1channels_num, out_channels=conv2channels_num, kernel_size=3, padding=1)
         self.fc = nn.Linear(conv2channels_num * 7 * 7, class_num)
 
+
     def forward(self, x):
         if self.use_bn_for_input:
             x = self.bn_input(x)
@@ -92,7 +93,7 @@ def calc_accuracy(test_data, model_, device):
             num_samples += pred_.size(0)
 
         data_tqdm.set_postfix_str(f"Accuracy is {num_correct/num_samples:.4f}")
-        
+
     model_.train()
     return num_correct/num_samples
 
