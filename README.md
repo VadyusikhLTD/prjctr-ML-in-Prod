@@ -16,3 +16,8 @@ Run docker
     docker run -it --rm --network=host --name test-first_docker first_docker:latest 
 
 --network=host enables to make request to Internet
+
+Before push image to dockerhub don't forget to tag the image  
+
+
+    docker tag ml_in_prod:week3_latest vadyusikh/ml_in_prod:week3_latest

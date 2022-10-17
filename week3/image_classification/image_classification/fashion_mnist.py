@@ -27,7 +27,7 @@ import wandb
 logger = logging.getLogger(__name__)
 
 
-def main():
+def full_train():
     # See all possible arguments in src/transformers/training_args.py
     # or by passing the --help flag to this script.
     # We now keep distinct sets of args, for a cleaner separation of concerns.
@@ -157,4 +157,4 @@ def train_loop(train_dataloader, model, training_args, device, is_use_wandb, opt
 
 
 if __name__ == "__main__":
-    main()
+    full_train()
