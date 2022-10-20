@@ -1,5 +1,10 @@
 import streamlit as st
 import torch
+from torch.utils.data import DataLoader
+import torchvision.transforms as transforms
+import torchvision.datasets as datasets
+from pathlib import Path
+
 from predictor import Predictor
 
 
@@ -7,25 +12,58 @@ from predictor import Predictor
 def get_model() -> Predictor:
     return Predictor.load_from_model_registry()
 
-
 predictor = get_model()
 
 
+@st.cache(hash_funcs={DataLoader: lambda _: None})
+def load_fashion_mnist(dataset_path: Path = "../data/dataset") -> DataLoader:
+    test_dataset = datasets.FashionMNIST(
+        root=dataset_path,
+        train=False,
+        transform=transforms.ToTensor(),
+        download=True)
+    return DataLoader(dataset=test_dataset, batch_size=10, shuffle=True)
+
+dataloader = load_fashion_mnist()
+
+
+def get_message(pred: torch.Tensor, label: int) -> str:
+    pred_label = pred.argmax()
+    prob = torch.nn.functional.softmax(pred)
+
+    if pred_label != label:
+        return f"Class {pred_label} predicted, it's probability is {prob[0][pred_label]:.4f}" \
+               f"\n\nReal label {label}, it's probability is {prob[0][label]:.4f}"
+    else:
+        return f"Right class {pred_label} predicted, it's probability is {prob[0][pred_label]:.4f}"
+
+
 def single_pred():
+    imgs, labels = next(iter(dataloader))
+    st.image(imgs[0][0].numpy(), caption=f"Class {labels[0].item()}")
     if st.button("Run inference"):
-        img = torch.rand(1, 1, 28, 28)
-        pred = predictor.predict(img)
-        prob = torch.nn.functional.softmax(pred)
-        st.write(f"Class {pred.argmax()} predicted, it's probability is {prob[0][pred.argmax()]:.4f}")
+        pred = predictor.predict(imgs[0].unsqueeze(0))
+        st.write(get_message(pred, labels[0].item()))
 
 
 def batch_pred():
+    imgs, labels = next(iter(dataloader))
+
     if st.button("Batch inference"):
-        img = torch.rand(4, 1, 28, 28)
-        pred = predictor.predict(img)
-        prob = torch.nn.functional.softmax(pred)
-        for i, c_num in enumerate(pred.argmax(axis=1)):
-            st.write(f"Class {c_num} predicted, it's probability is {prob[i][c_num]:.4f}")
+        pred = predictor.predict(imgs)
+        for i in range(0, len(imgs) // 2):
+            cols = st.columns(2)
+
+            cols[0].image(
+                imgs[i * 2][0].numpy(),
+                caption=get_message(pred[i * 2].unsqueeze(0), labels[i*2].item()),
+                use_column_width=True
+            )
+            cols[1].image(
+                imgs[i * 2 + 1][0].numpy(),
+                caption=get_message(pred[i * 2+1].unsqueeze(0), labels[i*2+1].item()),
+                use_column_width=True
+            )
 
 
 def main():

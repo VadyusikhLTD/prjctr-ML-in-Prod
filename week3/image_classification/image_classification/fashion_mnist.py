@@ -64,10 +64,10 @@ def train(model_args, data_args, training_args):
 
     if data_args.dataset_name == 'fashion_mnist':
         # LOAD DATA
-        train_dataset = datasets.FashionMNIST(root="../data/dataset", train=True, transform=transforms.ToTensor(), download=True)
+        train_dataset = datasets.FashionMNIST(root=data_args.dataset_path, train=True, transform=transforms.ToTensor(), download=True)
         train_dataloader = DataLoader(dataset=train_dataset, batch_size=training_args.train_batch_size, shuffle=True)
 
-        test_dataset = datasets.FashionMNIST(root="../data/dataset", train=False, transform=transforms.ToTensor(), download=True)
+        test_dataset = datasets.FashionMNIST(root=data_args.dataset_path, train=False, transform=transforms.ToTensor(), download=True)
         test_loader = DataLoader(dataset=test_dataset, batch_size=training_args.train_batch_size, shuffle=True)
     else:
         raise ValueError(f"Proper dataset not provided! Provided '{data_args.dataset_name}'")

@@ -3,7 +3,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
-import wandb
+from utils.wandb_artifacts import load_wandb_artifact
 from filelock import FileLock
 
 logger = logging.getLogger()
@@ -15,11 +15,7 @@ MODEL_LOCK = ".lock-file"
 
 
 def load_from_registry(model_name: str, model_path: Path):
-    with wandb.init() as run:
-        model_path.mkdir(parents=True, exist_ok=True)
-        artifact = run.use_artifact(model_name, type="model")
-        artifact_dir = artifact.download(root=model_path)
-        print(f"Model '{model_name}' loaded to f'{artifact_dir}'")
+    load_wandb_artifact(model_path=model_path, model_name=model_name, type='model')
 
 
 class Predictor:
