@@ -16,13 +16,14 @@ predictor = get_model()
 
 
 @st.cache(hash_funcs={DataLoader: lambda _: None})
-def load_fashion_mnist(dataset_path: Path = "../data/dataset") -> DataLoader:
+def load_fashion_mnist(dataset_path: Path = "data/dataset") -> DataLoader:
     test_dataset = datasets.FashionMNIST(
         root=dataset_path,
         train=False,
         transform=transforms.ToTensor(),
         download=True)
     return DataLoader(dataset=test_dataset, batch_size=10, shuffle=True)
+
 
 dataloader = load_fashion_mnist()
 

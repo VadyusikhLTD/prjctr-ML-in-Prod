@@ -3,7 +3,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
-from utils.wandb_artifacts import load_wandb_artifact
+from wandb_artifacts import load_wandb_artifact
 from filelock import FileLock
 
 logger = logging.getLogger()
@@ -28,10 +28,14 @@ class Predictor:
         return self.model(in_img)
 
     @classmethod
-    def load_from_model_registry(cls) -> 'Predictor':
+    def load_from_model_registry(
+            cls,
+            model_path: Path = MODEL_PATH,
+            model_name: str = MODEL_NAME,
+            model_id: str = MODEL_ID) -> 'Predictor':
         with FileLock(MODEL_LOCK):
-            MODEL_PATH.mkdir(parents=True, exist_ok=True)
-            if not (MODEL_PATH / MODEL_NAME).exists():
-                load_from_registry(model_name=MODEL_ID, model_path=MODEL_PATH )
+            model_path.mkdir(parents=True, exist_ok=True)
+            if not (model_path / model_name).exists():
+                load_from_registry(model_name=model_id, model_path=model_path)
 
-        return cls(model_load_path=MODEL_PATH / MODEL_NAME)
+        return cls(model_load_path=model_path / model_name)

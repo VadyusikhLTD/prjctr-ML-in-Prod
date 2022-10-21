@@ -9,3 +9,12 @@ build_app_streamlit:
 
 run_app_streamlit: build_app_streamlit
 	docker run -it --rm --network=host -e WANDB_API_KEY=${WANDB_API_KEY} app-streamlit:latest
+
+build_fast_api:
+	docker build --network=host  -f Dockerfile -t app-fastapi:latest --target app-fastapi .
+
+run_fast_api: build_fast_api
+	docker run -it --rm --network=host -e WANDB_API_KEY=${WANDB_API_KEY} app-fastapi:latest
+
+test_fast_api:
+	pytest -ra -s ./tests/test_fast_api.py
