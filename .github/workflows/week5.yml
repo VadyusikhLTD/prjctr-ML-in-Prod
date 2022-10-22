@@ -50,6 +50,7 @@ jobs:
           file: week5/Dockerfile
           push: true
           target: app-streamlit
+          secrets: "WANDB_API_KEY=${{ secrets.WANDB_API_KEY }}"
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/app-streamlit:latest
           cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/app-streamlit:buildcache
           cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/app-streamlit:buildcache,mode=max
@@ -62,6 +63,7 @@ jobs:
           file: week5/Dockerfile
           push: true
           target: app-fastapi
+          secrets: "WANDB_API_KEY=${{ secrets.WANDB_API_KEY }}"
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/app-fastapi:latest
           cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/app-fastapi:buildcache
           cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/app-fastapi:buildcache,mode=max
