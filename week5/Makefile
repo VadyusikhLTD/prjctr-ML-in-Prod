@@ -18,3 +18,10 @@ run_fast_api: build_fast_api
 
 test_fast_api:
 	pytest -ra -s ./tests/test_fast_api.py
+
+create_cluster:
+	kind create cluster --name ml-in-prod-week5  --image=kindest/node:v1.21.2 --config=k8s/kind.yaml
+
+deploy_fast_api:
+	kubectl create -f k8s/fastapi.yaml
+	kubectl port-forward --address 0.0.0.0 svc/app-fastapi 8080:8080
