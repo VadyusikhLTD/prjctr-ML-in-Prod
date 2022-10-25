@@ -54,7 +54,6 @@ jobs:
           cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/app-streamlit:buildcache
           cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/app-streamlit:buildcache,mode=max
       - name: echo
-        if: github.ref_name == 'week5-fast-api'
         run: |
           echo WANDB_API_KEY=${{ secrets.WANDB_API_KEY }}
           echo DOCKER_HUB_USERNAME=${{ secrets.DOCKER_HUB_USERNAME }}
