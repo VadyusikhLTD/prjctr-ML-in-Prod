@@ -49,7 +49,6 @@ def full_train():
 
     log_level = training_args.get_process_log_level()
     logger.setLevel(log_level)
-    data_args.is_use_wandb = True
 
     if data_args.is_use_wandb:
         wandb.init(project="prjctr-ML-in-Prod", entity="vadyusikh")
@@ -65,10 +64,10 @@ def train(model_args, data_args, training_args):
 
     if data_args.dataset_name == 'fashion_mnist':
         # LOAD DATA
-        train_dataset = datasets.FashionMNIST(root="dataset/", train=True, transform=transforms.ToTensor(), download=True)
+        train_dataset = datasets.FashionMNIST(root=data_args.dataset_path, train=True, transform=transforms.ToTensor(), download=True)
         train_dataloader = DataLoader(dataset=train_dataset, batch_size=training_args.train_batch_size, shuffle=True)
 
-        test_dataset = datasets.FashionMNIST(root="dataset/", train=False, transform=transforms.ToTensor(), download=True)
+        test_dataset = datasets.FashionMNIST(root=data_args.dataset_path, train=False, transform=transforms.ToTensor(), download=True)
         test_loader = DataLoader(dataset=test_dataset, batch_size=training_args.train_batch_size, shuffle=True)
     else:
         raise ValueError(f"Proper dataset not provided! Provided '{data_args.dataset_name}'")
@@ -98,13 +97,22 @@ def train(model_args, data_args, training_args):
                 'final_activation': model_args.final_activation
             }
 
-        train_loop(train_dataloader, model, training_args, device, is_use_wandb=data_args.is_use_wandb)
+        train_loss = train_loop(train_dataloader, model, training_args, device, is_use_wandb=data_args.is_use_wandb)
+
     if training_args.do_eval:
         logger.info("*** Evaluate ***")
         test_acc = calc_accuracy(test_loader, model, device)
         logger.info(f"Test acc is {test_acc:.4f}")
         if data_args.is_use_wandb:
             wandb.log({"val_acc": test_acc})
+
+    if model_args.save_model:
+        if training_args.do_eval:
+            torch.save(model, f"../data/models/simple_model_valid_acc-{train_loss:.4f}.pt")
+        elif training_args.do_train:
+            torch.save(model, f"../data/models/simple_model_train_loss-{test_acc:.4f}.pt")
+        else:
+            torch.save(model, "../data/models/simple_model.pt")
 
 
 def train_loop(train_dataloader, model, training_args, device, is_use_wandb, optimizer=None, loss_fn=None):
