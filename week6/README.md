@@ -15,8 +15,9 @@ They located in file `univariate_update_frequency.py` functions
 Visualisation is below. You also can create plot - use code
 in `univariate_update_frequency.py` file. 
 
+
+**Kolmogorov-Smirnov test visualisation**
 ![Kolmogorov-Smirnov test visualisation](data/Kolmogorov-Smirnov_drift_test.jpg)
 
-
+**Bounds base method visualisation**
 ![Bounds base method visualisation](data/bounds_drift_detection.jpg)
-
