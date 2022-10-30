@@ -15,9 +15,17 @@ They located in file `univariate_update_frequency.py` functions
 Visualisation is below. You also can create plot - use code
 in `univariate_update_frequency.py` file. 
 
+To calculate referral distribution you can use function `calculate_reference_distribution`
+its' inputs is `table_distribution_list` (historical distributions list to calculate
+referral distribution on ) and `solving_func` is the function that process input distributions
+and output the referral one, by default it is `np.median`. 
+
+**Referral VLI updates distributions**
+![Kolmogorov-Smirnov test visualisation](docs/images/Referral_VLI_updates_distribution.jpg)
+
 
 **Kolmogorov-Smirnov test visualisation**
-![Kolmogorov-Smirnov test visualisation](data/Kolmogorov-Smirnov_drift_test.jpg)
+![Kolmogorov-Smirnov test visualisation](docs/images/Kolmogorov-Smirnov_drift_test.jpg)
 
 **Bounds base method visualisation**
-![Bounds base method visualisation](data/bounds_drift_detection.jpg)
+![Bounds base method visualisation](docs/images/bounds_drift_detection.jpg)

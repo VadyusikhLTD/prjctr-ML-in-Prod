@@ -70,20 +70,11 @@ def get_update_references(reference_distribution_path: Path = Path("../data/gps_
         )
 
 
-def show_distributions(dists: List[Distribution]):
-    plt.figure(figsize=(15, 5))
-    for dist in dists:
-        plt.plot(dist.distribution_space, dist.distribution_pdf,
-                 label=dist.info.get('label', None),
-                 linestyle=dist.info.get('linestyle', None)
-                 )
-
-    plt.legend()
-    plt.grid()
-    plt.show()
-
-
-def detect_KS_drift(ref: Distribution, dist_to_check_list: List[Distribution], p_val: float = 0.05) -> List[Distribution] :
+def detect_ks_drift(
+        ref: Distribution,
+        dist_to_check_list: List[Distribution],
+        p_val: float = 0.05
+) -> List[Distribution]:
     drift_detector = KSDrift(ref.distribution_pdf, p_val=p_val)
     for i, dist in enumerate(dist_to_check_list):
         skd = drift_detector.predict(dist.distribution_pdf)['data']
@@ -123,7 +114,7 @@ def detect_bounded_drift(
     return dist_to_check_list
 
 
-def detect_bounded_drift_on_tabels(
+def detect_bounded_drift_on_tables(
         tables_to_check_list: List[TableInfo],
         bounds: Tuple[float, float] = (0.5, 1.35),
         abs_tol: float = 300
@@ -143,6 +134,18 @@ def detect_bounded_drift_on_tabels(
     return weekends_table_dist_list + workdays_table_dist_list
 
 
+def show_distributions(dists: List[Distribution]):
+    plt.figure(figsize=(15, 5))
+    for dist in dists:
+        plt.plot(dist.distribution_space, dist.distribution_pdf,
+                 label=dist.info.get('label', None),
+                 linestyle=dist.info.get('linestyle', None)
+                 )
+
+    plt.legend()
+    plt.grid()
+    plt.show()
+
 
 DATA_PATH = Path('../../../pet_project/tables')
 DATA2_PATH = Path('../../../PTETA/PTETA/data/local/tables')
@@ -151,15 +154,16 @@ DATA2_PATH = Path('../../../PTETA/PTETA/data/local/tables')
 if __name__ == "__main__":
 
     workday_ref_dist, weekend_ref_dist = get_update_references()
-    table_info_list = get_tables_from_folder(DATA_PATH)[-10:]
-
-    table_distribution_list = grab_time_distributions(table_info_list)
-    table_distribution_list = detect_KS_drift(workday_ref_dist, table_distribution_list)
-    for dist in table_distribution_list:
-        ksd_res = dist.info['KSDrift result']
-        dist.info['label'] = f"{dist.table_info.date.strftime('%d_%B')} ({dist.table_info.weekday}) |" \
-                             f"is_drift - {ksd_res['is_drift']}, dist={ksd_res['distance'][0]:.4f}, p_val={ksd_res['p_val'][0]:.4f}"
-        dist.info['linestyle'] = '-.'
+    show_distributions([workday_ref_dist, weekend_ref_dist])
+    # table_info_list = get_tables_from_folder(DATA_PATH)[-10:]
+    #
+    # table_distribution_list = grab_time_distributions(table_info_list)
+    # table_distribution_list = detect_KS_drift(workday_ref_dist, table_distribution_list)
+    # for dist in table_distribution_list:
+    #     ksd_res = dist.info['KSDrift result']
+    #     dist.info['label'] = f"{dist.table_info.date.strftime('%d_%B')} ({dist.table_info.weekday}) |" \
+    #                          f"is_drift - {ksd_res['is_drift']}, dist={ksd_res['distance'][0]:.4f}, p_val={ksd_res['p_val'][0]:.4f}"
+    #     dist.info['linestyle'] = '-.'
 
     # table_distribution_list = detect_bounded_drift_on_tabels(table_info_list)
     # for dist in table_distribution_list:
@@ -168,4 +172,4 @@ if __name__ == "__main__":
     #                          f"{dist.info['bound drift value']:.2f}"
     #     dist.info['linestyle'] = '-.'
 
-    show_distributions([workday_ref_dist, weekend_ref_dist] + table_distribution_list)
+    # show_distributions([workday_ref_dist, weekend_ref_dist] + table_distribution_list)
