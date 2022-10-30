@@ -20,21 +20,9 @@ class TableInfo:
 class Distribution:
     distribution_pdf: np.array
     distribution_space: np.array
+    info: dict = None
 
 
 @dataclass
 class TableDistribution(Distribution):
-    # def __init__(self, table_info: TableInfo, distribution_pdf: np.array, distribution_space: np.array):
-    #     self.table_info = table_info
-    #     self.distribution_pdf = distribution_pdf
-    #     self.distribution_space = distribution_space
-
-    table_info: TableInfo
-
-
-
-@dataclass
-class ReferenceDistribution(Distribution):
-    info: dict = None
-
-
+    table_info: TableInfo = None
