@@ -18,11 +18,37 @@ class TableInfo:
 
 @dataclass
 class Distribution:
-    distribution_pdf: np.array
     distribution_space: np.array
+    distribution_pdf: np.array
     info: dict = None
 
 
 @dataclass
 class TableDistribution(Distribution):
+    table_info: TableInfo = None
+
+
+@dataclass
+class Bound:
+    lower: float
+    upper: float
+
+
+@dataclass
+class Bound2D:
+    x: Bound
+    y: Bound
+
+
+@dataclass
+class Distribution2D:
+    distribution_x_space: np.array
+    distribution_y_space: np.array
+    distribution_pdf: np.ndarray
+    bounds: Bound2D
+    info: dict = None
+
+
+@dataclass
+class TableDistribution2D(Distribution2D):
     table_info: TableInfo = None
