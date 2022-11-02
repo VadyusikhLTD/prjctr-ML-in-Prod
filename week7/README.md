@@ -2,7 +2,7 @@
 
 ## Instructions on how to setup feast feature store
 
-Install feast
+Run Feast in docker container 
 
+    docker build --network=host -t fs:latest .
 
-    pip install feast
