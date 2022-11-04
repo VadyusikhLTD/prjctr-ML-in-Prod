@@ -1,6 +1,6 @@
 FROM pytorch/pytorch:1.12.1-cuda11.3-cudnn8-runtime as base
 
-RUN apt-get update && apt-get install make
+RUN apt-get update && apt-get install make && apt-get install nano
 
 WORKDIR /app
 
@@ -25,6 +25,7 @@ CMD uvicorn --host 0.0.0.0 --port 8081 --workers 2  src.fast_api_serving:app
 
 
 # Seldon docker image
+#FROM seldonio/seldon-core-s2i-python AS app-seldon
 FROM base AS app-seldon
 
 # Port for GRPC

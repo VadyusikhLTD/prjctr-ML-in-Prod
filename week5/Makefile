@@ -21,3 +21,9 @@ test_fast_api:
 
 test_fast_api_dockered: build_fast_api
 	docker run --network=host app-fastapi:latest make test_fast_api
+
+build_app_seldon:
+	docker build -f Dockerfile -t app-seldon:latest --target app-seldon .
+
+run_app_seldon: build_app_seldon
+	docker run -it -p 8080:8080 -e WANDB_API_KEY=${WANDB_API_KEY} app-seldon:latest
