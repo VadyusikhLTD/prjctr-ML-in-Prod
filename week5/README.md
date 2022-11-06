@@ -44,6 +44,15 @@ To test FastApi app in docker run command
 ## Seldon API for model + tests
 
 
+Clean all 
+
+    kind delete clusters --all
+    snap remove kubectl
+
+
+Set up
+
+    kind create cluster --name ml-in-production-course-week-5  --image=kindest/node:v1.21.2 --config=k8s/kind.yaml
     kind get clusters
     snap install kubectl --channel=1.21/stable --classic
     
