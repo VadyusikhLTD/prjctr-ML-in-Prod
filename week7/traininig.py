@@ -4,15 +4,14 @@ from pathlib import Path
 import feast
 import pandas as pd
 import typer
-from joblib import dump
-from sklearn.linear_model import LinearRegression
+
 
 # Connect to your local feature store
 fs = feast.FeatureStore(repo_path="features/")
 
 
-def get_dataset() -> pd.DataFrame:
-    entity_df = pd.read_parquet("data/data_for_21_SEP_to_30_SEP_2022.parquet")
+def get_dataset(file_path: Path = Path("app/data/data_for_13_SEP_2022_a.parquet")) -> pd.DataFrame:
+    entity_df = pd.read_parquet(file_path)
     return entity_df
 
 
