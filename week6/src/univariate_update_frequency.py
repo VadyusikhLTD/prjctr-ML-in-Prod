@@ -1,13 +1,15 @@
 import json
-
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from pathlib import Path
+
 from alibi_detect.cd import KSDrift
 from load_data import get_tables_from_folder, get_tables_from_path
 from datatypes import TableInfo, Distribution, TableDistribution
 from typing import List, Tuple, Callable
+
+from config import DATA_PATH, DATA2_PATH
 
 
 def get_time_distribution(
@@ -145,10 +147,6 @@ def show_distributions(dists: List[Distribution]):
     plt.legend()
     plt.grid()
     plt.show()
-
-
-DATA_PATH = Path('../../../pet_project/tables')
-DATA2_PATH = Path('../../../PTETA/PTETA/data/local/tables')
 
 
 if __name__ == "__main__":

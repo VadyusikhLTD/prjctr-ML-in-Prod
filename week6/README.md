@@ -10,7 +10,7 @@ in 10 minute intervals. I've use two methods - Kolmogorov-Smirnov test
 and bounds base method.
 
 They located in file `univariate_update_frequency.py` functions 
-`detect_KS_drift` and `detect_bounded_drift` respectfully.
+`detect_ks_drift` and `detect_bounded_drift` respectfully.
 
 Visualisation is below. You also can create plot - use code
 in `univariate_update_frequency.py` file. 
@@ -29,3 +29,27 @@ and output the referral one, by default it is `np.median`.
 
 **Bounds base method visualisation**
 ![Bounds base method visualisation](docs/images/bounds_drift_detection.jpg)
+
+
+## Multivariate drift detection
+For multivariate drift detection I've choosed coordinates. 
+I've use Kolmogorov-Smirnov test for data drift detection.
+
+It located in file `multivariate_drift_detection.py` function `detect2d_ks_drift`.
+
+Visualisation is below. You also can create plot - use code
+in `multivariate_drift_detection.py` file. 
+
+To calculate referral distribution you can use function `calculate_reference_distribution2d`
+its' inputs is `table_distribution_list` (historical distributions list to calculate
+referral distribution on ) and `solving_func` is the function that process input distributions
+and output the referral one, by default it is `np.median`. 
+
+**Referral VLI updates distributions**
+
+![Coordinate reference distribution visualisation](docs/images/coordinate_reference_distribution_visualisation.jpg)
+
+
+**Kolmogorov-Smirnov test visualisation**
+
+![Coordinate diff distribution](docs/images/coordinate_diff_distribution.jpg)

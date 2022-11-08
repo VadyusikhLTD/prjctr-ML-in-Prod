@@ -2,9 +2,7 @@ from pathlib import Path
 from datatypes import TableInfo
 from typing import List
 
-
-DATA_PATH = Path('../../../pet_project/tables')
-DATA2_PATH = Path('../../../PTETA/PTETA/data/local/tables')
+from config import DATA_PATH, DATA2_PATH
 
 
 def get_tables_from_folder(tables_folder: Path) -> List[TableInfo]:
