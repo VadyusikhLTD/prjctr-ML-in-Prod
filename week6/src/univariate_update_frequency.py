@@ -152,9 +152,12 @@ def show_distributions(dists: List[Distribution]):
 if __name__ == "__main__":
 
     workday_ref_dist, weekend_ref_dist = get_update_references()
+    table_info_list = get_tables_from_folder(DATA_PATH)[-10:]
+
+    # SHOW SIMPLE DISTRIBUTION
     show_distributions([workday_ref_dist, weekend_ref_dist])
-    # table_info_list = get_tables_from_folder(DATA_PATH)[-10:]
-    #
+
+    ## DETECT DRIFT WITH KS DETECTOR
     # table_distribution_list = grab_time_distributions(table_info_list)
     # table_distribution_list = detect_KS_drift(workday_ref_dist, table_distribution_list)
     # for dist in table_distribution_list:
@@ -163,6 +166,7 @@ if __name__ == "__main__":
     #                          f"is_drift - {ksd_res['is_drift']}, dist={ksd_res['distance'][0]:.4f}, p_val={ksd_res['p_val'][0]:.4f}"
     #     dist.info['linestyle'] = '-.'
 
+    ## DETECT DRIFT WITH BOUNDS DETECTOR
     # table_distribution_list = detect_bounded_drift_on_tabels(table_info_list)
     # for dist in table_distribution_list:
     #     b_drift = dist.info['bound drift']
