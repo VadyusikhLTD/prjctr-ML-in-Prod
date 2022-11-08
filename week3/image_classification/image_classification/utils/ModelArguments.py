@@ -42,3 +42,7 @@ class ModelArguments:
         default=None,
         # metadata={"help": "Will enable to load a pretrained model whose head dimensions are different."},
     )
+    save_model: Optional[bool] = field(
+        default=True,
+        # metadata={"help": "Will enable to load a pretrained model whose head dimensions are different."},
+    )

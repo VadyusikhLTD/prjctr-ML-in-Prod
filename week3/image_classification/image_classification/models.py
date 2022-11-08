@@ -47,7 +47,6 @@ class SimpleCNN(nn.Module):
         self.conv2 = nn.Conv2d(in_channels=conv1channels_num, out_channels=conv2channels_num, kernel_size=3, padding=1)
         self.fc = nn.Linear(conv2channels_num * 7 * 7, class_num)
 
-
     def forward(self, x):
         if self.use_bn_for_input:
             x = self.bn_input(x)
