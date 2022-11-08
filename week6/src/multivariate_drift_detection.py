@@ -4,14 +4,17 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from pathlib import Path
+from tqdm import tqdm
+
+from alibi_detect.cd import KSDrift
+import folium
+import pymap3d
 
 from load_data import get_tables_from_folder, get_tables_from_path
 from datatypes import TableInfo, Bound2D, Distribution2D, TableDistribution2D
 from typing import List, Tuple, Callable
+import webbrowser
 
-from tqdm import tqdm
-
-import pymap3d
 
 from config import \
     DATA_PATH, \
@@ -117,7 +120,6 @@ def detect2d_ks_drift(
         dist_to_check_list: List[Distribution2D],
         p_val: float = 0.05
 ) -> List[Distribution2D]:
-    from alibi_detect.cd import KSDrift
 
     drift_detector = KSDrift(ref.distribution_pdf, p_val=p_val)
     for i, dist in enumerate(dist_to_check_list):
@@ -130,31 +132,7 @@ def detect2d_ks_drift(
     return dist_to_check_list
 
 
-# def detect_bounded_drift_on_tables(
-#         tables_to_check_list: List[TableInfo],
-#         bounds: Tuple[float, float] = (0.5, 1.35),
-#         abs_tol: float = 300
-# ) -> List[Distribution]:
-#
-#     table_distribution_list = grab_time_distributions(tables_to_check_list)
-#     workday_ref_dist, weekend_ref_dist = get_update_references()
-#
-#     weekends_table_dist_list = [dist for dist in table_distribution_list
-#                                 if dist.table_info.weekday in ['Saturday', 'Sunday']]
-#     weekends_table_dist_list = detect_bounded_drift(weekend_ref_dist, weekends_table_dist_list, bounds, abs_tol)
-#
-#     workdays_table_dist_list = [dist for dist in table_distribution_list
-#                                 if dist.table_info.weekday not in ['Saturday', 'Sunday']]
-#     workdays_table_dist_list = detect_bounded_drift(workday_ref_dist, workdays_table_dist_list, bounds, abs_tol)
-#
-#     return weekends_table_dist_list + workdays_table_dist_list
-
-
 def show_distribution_heatmap(dists: Distribution2D, map_file_save_path: Path = Path("../data/map.html")) -> None:
-    import folium
-    from folium.plugins import HeatMap
-    import webbrowser
-
     map_hooray = folium.Map(location=CHERNIVTSI_CENTER, zoom_start=12)
 
     folium.PolyLine([[CHERNIVTSI_BOUND_2D.x.lower, CHERNIVTSI_BOUND_2D.y.lower],
@@ -170,7 +148,7 @@ def show_distribution_heatmap(dists: Distribution2D, map_file_save_path: Path = 
             points += [[x, y]] * int(dists.distribution_pdf[i, j])
 
     # Plot it on the map
-    HeatMap(points, radius=5, blur=3).add_to(map_hooray)
+    folium.plugins.HeatMap(points, radius=5, blur=3).add_to(map_hooray)
 
     # Display the map
     map_hooray.save(map_file_save_path)
@@ -181,17 +159,6 @@ if __name__ == "__main__":
     step_unit = convert_step_from_meters_to_geod(CHERNIVTSI_CENTER, (100, 100))
     table_info_list = get_tables_from_folder(DATA_PATH) + get_tables_from_folder(DATA2_PATH)
     table_distribution_list = grab_coordinate_distribution(table_info_list[-5:], bounds=CHERNIVTSI_BOUND_2D, step=step_unit)
-
-    ## SAVE REFERENCE DISTRIBUTION
-    # ref_dist = calculate_reference_distribution2d(table_distribution_list)
-    #
-    # with open('../data/coordinate_distribution2d.json', 'w', encoding='utf-8') as f:
-    #     data2save = {"coordinate_distribution2d": {
-    #         "distribution_x_space": ref_dist.distribution_x_space.tolist(),
-    #         "distribution_y_space": ref_dist.distribution_y_space.tolist(),
-    #         "distribution_pdf": ref_dist.distribution_pdf.tolist()
-    #     }}
-    #     json.dump(data2save, f, ensure_ascii=False)
 
     ref_dist = get_coordinate_reference_distribution()
     show_distribution_heatmap(ref_dist)
