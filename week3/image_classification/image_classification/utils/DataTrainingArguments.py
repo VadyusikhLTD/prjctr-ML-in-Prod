@@ -47,10 +47,7 @@ class DataTrainingArguments:
             )
         },
     )
-    train_file: Optional[str] = field(
-        default=None, metadata={"help": "A csv or a json file containing the training data."}
+    dataset_path: Optional[str] = field(
+        default="../data/dataset",
+        metadata={"help": "Path to save dataset locally."}
     )
-    validation_file: Optional[str] = field(
-        default=None, metadata={"help": "A csv or a json file containing the validation data."}
-    )
-    test_file: Optional[str] = field(default=None, metadata={"help": "A csv or a json file containing the test data."})
