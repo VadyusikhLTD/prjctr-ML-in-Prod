@@ -1,9 +1,7 @@
-from datetime import datetime
 from pathlib import Path
 
 import feast
 import pandas as pd
-import typer
 from joblib import dump
 from sklearn.naive_bayes import CategoricalNB
 from typing import Tuple
@@ -53,8 +51,6 @@ def train_model(
 
 
 if __name__ == "__main__":
-    print("P start")
     train_model(
         dataset_path = Path("data/data_for_13_SEP_2022.parquet"),
         model_resutl_path=Path("data/driver_model.bin"))
-    print("P end")
