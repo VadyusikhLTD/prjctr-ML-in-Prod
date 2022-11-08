@@ -27,8 +27,10 @@ def add_features(training_df: pd.DataFrame) -> pd.DataFrame:
     return training_df_with_features
 
 
-def train_model(model_resutl_path: Path = Path("driver_model.bin")):
-    training_df = get_dataset()
+def train_model(
+        dataset_path,
+        model_resutl_path: Path = Path("driver_model.bin"), ):
+    training_df = get_dataset(dataset_path)
     training_df_with_features = add_features(training_df=training_df)
     print(f"training_df = {training_df_with_features.head()}")
     # Train model
@@ -44,4 +46,8 @@ def train_model(model_resutl_path: Path = Path("driver_model.bin")):
 
 
 if __name__ == "__main__":
-    typer.run(train_model)
+    train_model(dataset_path = Path("data/data_for_13_SEP_2022_a.parquet"))
+    # typer.run(
+    #     train_model,
+    #     dataset_path = Path("data/data_for_13_SEP_2022_a.parquet")
+    # )

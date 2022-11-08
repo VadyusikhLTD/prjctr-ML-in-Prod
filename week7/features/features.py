@@ -9,9 +9,9 @@ from feast.types import Float32, String
 
 bus = Entity(name="bus", join_keys=["id"])
 
-bus_stats_source = FileSource(
+bus_decimal_stats_source = FileSource(
     name="bus_decimal_stats_source",
-    path="app/data/data_for_13_SEP_2022_b.parquet",
+    path="../data/data_for_13_SEP_2022_b.parquet",
     timestamp_field="gpstime",
 )
 # driver_stats_source = FileSource(
@@ -31,7 +31,7 @@ bus_stats_fv = FeatureView(
         Field(name="routeName", dtype=String),
     ],
     online=True,
-    source=bus_stats_source,
+    source=bus_decimal_stats_source,
     tags={"team": "bus_performance"},
 )
 

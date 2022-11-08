@@ -1,8 +1,13 @@
 build:
 	docker build --network=host -t fs:latest .
 
+build-no-cache:
+	docker build --no-cache --network=host -t fs:latest .
+
 run:
 	docker run -it --rm --network=host -v $PWD:/app -p 8080:8080 fs:latest /bin/bash
+
+
 
 #run_dev: build
 #	docker run -it --rm --network=host -v ${PWD}:/main ml_in_prod:week3_latest /bin/bash
