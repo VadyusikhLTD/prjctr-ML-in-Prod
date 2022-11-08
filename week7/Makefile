@@ -4,9 +4,11 @@ build:
 build-no-cache:
 	docker build --no-cache --network=host -t fs:latest .
 
-run:
+run_mounted:
 	docker run -it --rm --network=host -v $PWD:/app -p 8080:8080 fs:latest /bin/bash
 
+run_not_mounted:
+	docker run -it --rm --network=host -p 8080:8080 fs:latest /bin/bash
 
 
 #run_dev: build

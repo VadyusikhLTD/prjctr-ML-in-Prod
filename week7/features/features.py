@@ -11,7 +11,7 @@ bus = Entity(name="bus", join_keys=["id"])
 
 bus_decimal_stats_source = FileSource(
     name="bus_decimal_stats_source",
-    path="../data/data_for_13_SEP_2022_b.parquet",
+    path="data/data_for_13_SEP_2022.parquet",
     timestamp_field="gpstime",
 )
 # driver_stats_source = FileSource(

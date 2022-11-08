@@ -12,10 +12,11 @@ RUN pip install -r requirements.txt
 
 
 FROM fs:base as fs
-#ENV PYTHONPATH /app
-#RUN ls
-#RUN rm -rf *
-#RUN #ls
-##COPY . .
+ENV PYTHONPATH /app
+RUN ls
+RUN rm *
+RUN ls
+COPY . .
+RUN ls
 
 CMD [ "bash" ]
