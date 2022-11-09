@@ -14,10 +14,12 @@ My problem was - I've _minio-service_ instead of _minio-api_ and _minio-ui_.
 
     sudo minikube delete
     minikube start
+
 3. Start _minio_ 
 
 
     kubectl create -f minio-standalone.yaml
+
 4. Enable ports to UI and API 
 
     

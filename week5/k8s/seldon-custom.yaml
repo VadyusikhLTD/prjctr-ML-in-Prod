@@ -13,7 +13,7 @@ spec:
     - spec:
         containers:
         - image: vadyusikh/app-seldon:latest
-          name: classifier
+          name: fashion-mnist-classifier
           env:
           - name: GUNICORN_THREADS
             value: '1'
@@ -24,7 +24,7 @@ spec:
           - name: SELDON_DEBUG
             value: '1'          
           - name: WANDB_API_KEY
-            value: 62cfffbb52717ad595b33f3e24b2673e36b3cf90
+            value: INSERT_KEY
           imagePullPolicy: Always
 
     graph:
