@@ -82,8 +82,3 @@ jobs:
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/app-seldon:latest
           cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/app-seldon:buildcache
           cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/app-seldon:buildcache,mode=max
-      -
-        name: Test fastapi
-        if: github.ref_name == 'week5-seldon' || github.head_ref == 'week5-seldon'
-        run: |
-          docker run --network=host -e WANDB_API_KEY=${{ secrets.WANDB_API_KEY }} ${{ secrets.DOCKER_HUB_USERNAME }}/app-seldon:latest make test_seldon
