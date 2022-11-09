@@ -75,8 +75,8 @@ jobs:
         if: github.ref_name == 'week5-seldon' || github.head_ref == 'week5-seldon'
         uses: docker/build-push-action@v2
         with:
-          context: week-5/
-          file: week-5/Dockerfile
+          context: week5/
+          file: week5/Dockerfile
           push: true
           target: app-seldon
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/app-seldon:latest
