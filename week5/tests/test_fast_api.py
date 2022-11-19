@@ -8,14 +8,12 @@ from fast_api_serving import app
 client = TestClient(app)
 
 
-@pytest
 def test_health_check():
     response = client.get("/health_check")
     assert response.status_code == 200
     assert response.json() == "ok"
 
 
-@pytest
 def test_predict():
     a = np.zeros((1, 1, 28, 28)).tolist()
     response = client.post("/predict", json={"images": a})

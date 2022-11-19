@@ -1,14 +1,14 @@
 # This is a basic workflow to help you get started with Actions
 
-name: week3-CI
+name: week5-CI
 
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "week5", "week5-fast-api", "week5-streamlit" ]
+    branches: [ "week5", "week5-fast-api", "week5-streamlit", "week5-seldon"]
   pull_request:
-    branches: [ "week5", "week5-fast-api", "week5-streamlit" ]
+    branches: [ "week5", "week5-fast-api", "week5-streamlit", "week5-seldon"]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -50,7 +50,6 @@ jobs:
           file: week5/Dockerfile
           push: true
           target: app-streamlit
-          secrets: "WANDB_API_KEY=${{ secrets.WANDB_API_KEY }}"
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/app-streamlit:latest
           cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/app-streamlit:buildcache
           cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/app-streamlit:buildcache,mode=max
@@ -63,12 +62,23 @@ jobs:
           file: week5/Dockerfile
           push: true
           target: app-fastapi
-          secrets: "WANDB_API_KEY=${{ secrets.WANDB_API_KEY }}"
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/app-fastapi:latest
           cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/app-fastapi:buildcache
           cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/app-fastapi:buildcache,mode=max
       -
-        name: Test code
+        name: Test fastapi
         if: github.ref_name == 'week5-fast-api' || github.head_ref == 'week5-fast-api'
         run: |
-          docker run --network=host ${{ secrets.DOCKER_HUB_USERNAME }}/app-fastapi:latest make test_fast_api
+          docker run --network=host -e WANDB_API_KEY=${{ secrets.WANDB_API_KEY }} ${{ secrets.DOCKER_HUB_USERNAME }}/app-fastapi:latest make test_fast_api
+      -
+        name: Build app seldon
+        if: github.ref_name == 'week5-seldon' || github.head_ref == 'week5-seldon'
+        uses: docker/build-push-action@v2
+        with:
+          context: week5/
+          file: week5/Dockerfile
+          push: true
+          target: app-seldon
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/app-seldon:latest
+          cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/app-seldon:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/app-seldon:buildcache,mode=max

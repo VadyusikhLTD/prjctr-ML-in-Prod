@@ -1,6 +1,7 @@
 import logging
 import os
 import sys
+from pathlib import Path
 
 from models import SimpleCNN, calc_accuracy
 
@@ -25,6 +26,7 @@ from utils.ModelArguments import ModelArguments
 import wandb
 
 logger = logging.getLogger(__name__)
+MODELS_DIR_PARH = Path("../data/models")
 
 
 def full_train():
@@ -108,11 +110,11 @@ def train(model_args, data_args, training_args):
 
     if model_args.save_model:
         if training_args.do_eval:
-            torch.save(model, f"../data/models/simple_model_valid_acc-{train_loss:.4f}.pt")
+            torch.save(model, MODELS_DIR_PARH/f"simple_model_valid_acc-{train_loss:.4f}.pt")
         elif training_args.do_train:
-            torch.save(model, f"../data/models/simple_model_train_loss-{test_acc:.4f}.pt")
+            torch.save(model, MODELS_DIR_PARH/f"simple_model_train_loss-{test_acc:.4f}.pt")
         else:
-            torch.save(model, "../data/models/simple_model.pt")
+            torch.save(model, MODELS_DIR_PARH/f"simple_model.pt")
 
 
 def train_loop(train_dataloader, model, training_args, device, is_use_wandb, optimizer=None, loss_fn=None):
