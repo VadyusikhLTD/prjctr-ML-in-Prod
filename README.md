@@ -1,6 +1,8 @@
 # prjctr-ML-in-Prod
 [prjctr course Machine Learning in Production](https://prjctr.com/course/machine-learning-in-production)
 
+[Certificate](prjctr-ML-in-Prod/Vadym%20Honcharenko%20Projector%20certificate.pdf)
+
 ## Docker 
 
 Got permission denied [trouble fix](https://www.digitalocean.com/community/questions/how-to-fix-docker-got-permission-denied-while-trying-to-connect-to-the-docker-daemon-socket])
